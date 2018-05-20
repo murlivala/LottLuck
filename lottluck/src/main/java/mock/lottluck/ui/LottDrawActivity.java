@@ -55,7 +55,7 @@ public class LottDrawActivity extends AppCompatActivity {
 
         tv_amount.setText(intent.getStringExtra("DrawDisplayName"));
         if(days > 0){
-            tv_days_heading.setText("In "+days+" days");
+            tv_days_heading.setText("In "+days+" day(s)");
             tv_day.setText(""+days);
         }else{
             tv_days_heading.setText("TONIGHT");
