@@ -23,11 +23,16 @@ public class LottLuckListActivityVM implements ServiceCallback<BaseModel>,ItemCl
     private final String TAG = LottLuckListActivityVM.class.getSimpleName();
     private CustomAdapter mAdapter;
     private LottLuckListService lottLuckListService;
-    private UICallback uiCallback;
+    private volatile UICallback uiCallback;
     private ItemClickCallback itemClickCallback;
     List<LottLuckItems> results;
     public LottLuckListActivityVM(Context context, UICallback uiCallback,ItemClickCallback itemClickCallback){
         mAdapter = new CustomAdapter(context, LottLuckListActivityVM.this);
+        this.itemClickCallback = itemClickCallback;
+        this.uiCallback = uiCallback;
+    }
+
+    public void updateCallbacks(UICallback uiCallback,ItemClickCallback itemClickCallback){
         this.itemClickCallback = itemClickCallback;
         this.uiCallback = uiCallback;
     }
@@ -54,9 +59,9 @@ public class LottLuckListActivityVM implements ServiceCallback<BaseModel>,ItemCl
             mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(),status);
             processResponse(status,response);
         }else if(response.body() instanceof LottLuckDrawModel){
-            LottLuckDrawModel lottLuckDrawModel = (LottLuckDrawModel) response.body();
-            Log.d("####",""+lottLuckDrawModel.getDraws().get(0).getDrawDisplayName());
-            uiCallback.updateView(Constants.LAUNCH_DRAW_SCREEN,response);
+            if(uiCallback != null){
+                uiCallback.updateView(Constants.LAUNCH_DRAW_SCREEN,response);
+            }
         }
     }
 
@@ -76,10 +81,8 @@ public class LottLuckListActivityVM implements ServiceCallback<BaseModel>,ItemCl
             Log.d(TAG,"onItemClick - pos:"+position);
         }
         if(null != itemClickCallback){
-            String[] p = {"OzLotto"};
             ArrayList<String> pp = new ArrayList<String>();
             pp.add("OzLotto");
-            Log.d("####",""+results.get(position).getCompanyId());
             Integer num = 1;
             lottLuckListService.request(results.get(position).getCompanyId(),num,pp);
         }
@@ -90,7 +93,7 @@ public class LottLuckListActivityVM implements ServiceCallback<BaseModel>,ItemCl
             lottLuckListService = new LottLuckListService(this);
             lottLuckListService.start();
         }else{
-         //TBD
+            lottLuckListService.request();
         }
     }
 

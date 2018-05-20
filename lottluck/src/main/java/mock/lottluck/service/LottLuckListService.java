@@ -67,8 +67,6 @@ public class LottLuckListService {
         mDrawCall.enqueue(new Callback<LottLuckDrawModel>() {
             @Override
             public void onResponse(Call<LottLuckDrawModel> call, Response<LottLuckDrawModel> response) {
-                Log.d("####","onRes:"+response.body()+" :"+response.message()+" :"+response.errorBody());
-                Log.d("####"," :"+response.toString()+" :"+response.code());
                 if(response.isSuccessful()) {
                     mServiceCallBack.onSuccess(Constants.SUCCESS,response);
                 } else {
@@ -86,6 +84,8 @@ public class LottLuckListService {
     public void cancel(){
         if(null != mCall){
             mCall.cancel();
+        }
+        if(null != mDrawCall){
             mDrawCall.cancel();
         }
     }

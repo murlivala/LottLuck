@@ -18,6 +18,8 @@ public class LottLuckApp extends Application {
     public LottLuckListActivityVM getLottLuckListActivityVM(UICallback uiCallback, ItemClickCallback itemClickCallback) {
         if(null == lottLuckListActivityVM){
             lottLuckListActivityVM = new LottLuckListActivityVM(getApplicationContext(),uiCallback, itemClickCallback);
+        }else{
+            lottLuckListActivityVM.updateCallbacks(uiCallback, itemClickCallback);
         }
         return lottLuckListActivityVM;
     }

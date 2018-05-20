@@ -105,20 +105,21 @@ public class LottLuckListActivity extends BaseActivity implements UICallback<Bas
         }
     }
 
-    public void showLottDraw(LottLuckDrawModel lottLuckDrawModel){
-        LottLuckDrawItems lottLuckDrawItems = lottLuckDrawModel.getDraws().get(0);
-        final Intent intent = new Intent();
-        intent.setClassName(getPackageName(),getPackageName()+".ui.LottDrawActivity");
-        intent.putExtra("id", lottLuckDrawItems.getProductId());
-        intent.putExtra("DrawDisplayName", lottLuckDrawItems.getDrawDisplayName());
-        intent.putExtra("timer", lottLuckDrawItems.getDrawCountDownTimerSeconds());
-        intent.putExtra("url", lottLuckDrawItems.getDrawLogoUrl());
-        Log.d(TAG,"showLottDraw() - timer: "+lottLuckDrawItems.getDrawCountDownTimerSeconds());
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);//left to right slide
-        if(BuildConfig.DEBUG){
-            //Log.d(TAG,"showLottDraw() - id: "+id);
-        }
+    public void showLottDraw(final LottLuckDrawModel lottLuckDrawModel){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LottLuckDrawItems lottLuckDrawItems = lottLuckDrawModel.getDraws().get(0);
+                final Intent intent = new Intent();
+                intent.setClassName(getPackageName(),getPackageName()+".ui.LottDrawActivity");
+                intent.putExtra("id", lottLuckDrawItems.getProductId());
+                intent.putExtra("DrawDisplayName", lottLuckDrawItems.getDrawDisplayName());
+                intent.putExtra("timer", lottLuckDrawItems.getDrawCountDownTimerSeconds());
+                intent.putExtra("url", lottLuckDrawItems.getDrawLogoUrl());
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);//left to right slide
+            }
+        });
     }
 
     private Message getMessage(int what){
@@ -200,12 +201,12 @@ public class LottLuckListActivity extends BaseActivity implements UICallback<Bas
 
     @Override
     protected void onDestroy(){
+        super.onDestroy();
         if(isFinishing()){
             if(null != lottLuckListActivityVM){
                 lottLuckListActivityVM.cancel();
             }
         }
-        super.onDestroy();
     }
 
 }
